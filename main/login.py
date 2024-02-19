@@ -11,6 +11,7 @@ class LoginDialog(QDialog, login_ui.Ui_Dialog):
 
         self.setWindowTitle('Login')
         self.login_btn.clicked.connect(self.login_fuc)
+        self.regist_btn.clicked.connect(self.register_window)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
 
     def login_fuc(self):
@@ -26,13 +27,16 @@ class LoginDialog(QDialog, login_ui.Ui_Dialog):
         )
 
         if response.status_code == 200:
-            info = QMessageBox.information(self,"Info","登入成功")
+            info = QMessageBox.information(self, "Info", "登入成功")
 
             if info == self.accept():
                 pass
 
         else:
-            QMessageBox.warning(self,"Warning", "登入失敗")
+            QMessageBox.warning(self, "Warning", "登入失敗")
+
+    def register_window(self):
+        pass
 
 
 if __name__ == '__main__':
