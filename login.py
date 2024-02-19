@@ -9,7 +9,7 @@ class LoginDialog(QDialog, login_ui.Ui_Dialog):
         super().__init__()
         self.setupUi(self)
 
-        self.setWindowTitle('登入')
+        self.setWindowTitle('Login')
         self.login_btn.clicked.connect(self.login_fuc)
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
 
@@ -26,14 +26,17 @@ class LoginDialog(QDialog, login_ui.Ui_Dialog):
         )
 
         if response.status_code == 200:
-            QMessageBox.information(self, "登入", "登入成功")
-            return self.accept()
+            info = QMessageBox.information(self,"Info","登入成功")
+
+            if info == self.accept():
+                pass
+
         else:
-            QMessageBox.warning(self, "登入", "登入失敗")
+            QMessageBox.warning(self,"Warning", "登入失敗")
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+    app = QApplication()
     login_ui = LoginDialog()
     login_ui.show()
     sys.exit(app.exec())
