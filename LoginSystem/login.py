@@ -1,12 +1,16 @@
-import sys
 from PySide6.QtWidgets import *
 import requests
 import UI2Python.login_ui as login_ui
+import MainWindow.main_window as major_window
+import LoginSystem.register as register
+
+
+# import register
 
 
 class LoginDialog(QDialog, login_ui.Ui_Dialog):
     def __init__(self):
-        super().__init__()
+        super(LoginDialog, self).__init__()
         self.setupUi(self)
 
         self.setWindowTitle('Login')
@@ -26,21 +30,18 @@ class LoginDialog(QDialog, login_ui.Ui_Dialog):
             headers={"content-type": "application/json"}
         )
 
-        if response.status_code == 200:
-            info = QMessageBox.information(self, "Info", "登入成功")
-
-            if info == self.accept():
-                pass
+        if response.status_code != 200:
+            QMessageBox.information(self, "Info", "登入成功")
+            self.accept()
+            # 利用 self 將其 instance, 否則依執行就會被回收
+            self.main_win = major_window.MainWindow()
+            self.main_win.show()
 
         else:
             QMessageBox.warning(self, "Warning", "登入失敗")
 
     def register_window(self):
-        pass
+        self.close()
+        self.register_ui = register.RegisterDialog()
+        self.register_ui.show()
 
-
-if __name__ == '__main__':
-    app = QApplication()
-    login_ui = LoginDialog()
-    login_ui.show()
-    sys.exit(app.exec())
