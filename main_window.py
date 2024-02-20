@@ -1,8 +1,7 @@
 import sys
 from PySide6.QtWidgets import *
-import requests
 import UI2Python.MainWindow_ui as mainUI
-import LoginSystem.login as login
+import login_system as login
 
 # import register
 
