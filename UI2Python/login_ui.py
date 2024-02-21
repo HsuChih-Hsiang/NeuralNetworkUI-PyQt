@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading main file 'login.ui'
+## Form generated from reading UI file 'login.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.2
 ##
-## WARNING! All changes made in this file will be lost when recompiling main file!
+## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
@@ -23,7 +23,10 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(262, 149)
+        Dialog.setWindowModality(Qt.NonModal)
+        Dialog.resize(220, 130)
+        Dialog.setMinimumSize(QSize(220, 130))
+        Dialog.setMaximumSize(QSize(220, 130))
         self.gridLayout = QGridLayout(Dialog)
         self.gridLayout.setObjectName(u"gridLayout")
         self.verticalLayout_2 = QVBoxLayout()
