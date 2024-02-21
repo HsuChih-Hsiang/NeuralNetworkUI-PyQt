@@ -1,7 +1,7 @@
 import sys
 from PySide6.QtWidgets import *
 import UI2Python.MainWindow_ui as mainUI
-import login_system as login
+from manage_system import login_system as login
 
 
 class MainWindow(QMainWindow, mainUI.Ui_MainWindow):
