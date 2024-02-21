@@ -3,6 +3,7 @@ from PySide6.QtWidgets import *
 import requests
 import UI2Python.login_ui as login_ui
 import main_window as major_window
+from utility.ConfigFileIO import save_token
 
 
 class LoginDialog(QDialog, login_ui.Ui_Dialog):
@@ -30,10 +31,15 @@ class LoginDialog(QDialog, login_ui.Ui_Dialog):
         if response.status_code == 200:
             QMessageBox.information(self, "Info", "登入成功")
             self.accept()
-            # 利用 self 將其 instance, 否則依執行就會被回收
-            # 寫在 __init__ 會在執行時直接出現畫面
-            self.main_win = major_window.MainWindow()
-            self.main_win.show()
+
+            result = save_token(response.json().get('result'))
+            if result:
+                # 利用 self 將其 instance, 否則依執行就會被回收
+                # 寫在 __init__ 會在執行時直接出現畫面
+                self.main_win = major_window.MainWindow()
+                self.main_win.show()
+            else:
+                QMessageBox.warning(self, "Warning", "config 檔缺失或所毀,請檢查檔案正確性")
 
         else:
             QMessageBox.warning(self, "Warning", "登入失敗")
@@ -50,7 +56,45 @@ class RegisterDialog(QDialog, register_ui.Ui_Dialog):
         self.setupUi(self)
 
         self.setWindowTitle('Register')
+        self.password_lineEdit.setEchoMode(QLineEdit.EchoMode.Password)
+        self.compassword_lineEdit.setEchoMode(QLineEdit.EchoMode.Password)
+
+        self.confirm_btn.clicked.connect(self.register_func)
 
     def closeEvent(self, event):
         self.login_ui = LoginDialog()
         self.login_ui.show()
+
+    def register_func(self):
+        url = "http://127.0.0.1:8000/member/register"
+        account = self.account_lineEdit.text()
+        password = self.password_lineEdit.text()
+        confirm_password = self.compassword_lineEdit.text()
+        name = self.name_lineEdit.text()
+
+        if password != confirm_password:
+            QMessageBox.warning(self, "Warning", "密碼不一致")
+
+        else:
+            payloads = {"account": account, "password": password, "name": name}
+            response = requests.post(
+                url,
+                json=payloads,
+                headers={"content-type": "application/json"}
+            )
+
+            if response.status_code == 200:
+                QMessageBox.information(self, "Info", "註冊成功")
+                self.accept()
+                result = save_token(response.json().get('result'))
+
+                if result:
+                    # 利用 self 將其 instance, 否則依執行就會被回收
+                    # 寫在 __init__ 會在執行時直接出現畫面
+                    self.main_win = major_window.MainWindow()
+                    self.main_win.show()
+                else:
+                    QMessageBox.warning(self, "Warning", "config 檔缺失或所毀,請檢查檔案正確性")
+
+            elif response.status_code == 400:
+                QMessageBox.warning(self, "Warning", "註冊失敗")

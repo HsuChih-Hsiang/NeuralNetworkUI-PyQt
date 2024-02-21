@@ -3,8 +3,6 @@ from PySide6.QtWidgets import *
 import UI2Python.MainWindow_ui as mainUI
 import login_system as login
 
-# import register
-
 
 class MainWindow(QMainWindow, mainUI.Ui_MainWindow):
     def __init__(self, parent=None):

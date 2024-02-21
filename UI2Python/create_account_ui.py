@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading main file 'create_account.ui'
+## Form generated from reading UI file 'create_account.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.6.2
 ##
-## WARNING! All changes made in this file will be lost when recompiling main file!
+## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
@@ -23,7 +23,9 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(257, 156)
+        Dialog.resize(260, 160)
+        Dialog.setMinimumSize(QSize(260, 160))
+        Dialog.setMaximumSize(QSize(260, 160))
         self.gridLayout = QGridLayout(Dialog)
         self.gridLayout.setObjectName(u"gridLayout")
         self.verticalLayout = QVBoxLayout()
