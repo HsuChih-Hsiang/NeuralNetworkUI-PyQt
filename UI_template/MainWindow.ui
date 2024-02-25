@@ -26,20 +26,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>0</y>
-      <width>541</width>
-      <height>531</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="account_management_btn_2">
+   <widget class="QPushButton" name="account_management_btn">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -88,7 +75,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="neural_network_0_to_2">
+   <widget class="QPushButton" name="neural_network_0_to_1">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -117,6 +104,16 @@
     </property>
     <property name="text">
      <string>神經網路 0  to 1</string>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="md_textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>0</y>
+      <width>551</width>
+      <height>521</height>
+     </rect>
     </property>
    </widget>
   </widget>

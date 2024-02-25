@@ -1,4 +1,5 @@
 import yaml
+from markdown import markdown
 import os
 
 
@@ -27,8 +28,17 @@ def get_token():
     try:
         with open(get_setting_path()) as token:
             data = yaml.load(token, Loader=yaml.FullLoader)
-            token.close()
         return data.get('token', None)
 
     except IOError as e:
         return None
+
+
+def open_md_file(file_dir: str, file_name: str):
+    try:
+        with open(get_setting_path(file_dir, file_name), 'r', encoding="utf-8") as file:
+            data = markdown(file.read())
+        return data
+
+    except IOError as e:
+        return False
