@@ -15,10 +15,10 @@ class MainWindow(QMainWindow, mainUI.Ui_MainWindow):
         self.neural_network_0_to_1.enterEvent = self.show_nn_describe
 
     def show_account_describe(self, event):
-        self.md_textBrowser.setMarkdown(open_md_file(r'Template/EntryTemplate',r'Management.md'))
+        self.md_textBrowser.setHtml(open_md_file(r'Template/EntryTemplate',r'Management.md'))
 
     def show_nn_describe(self, event):
-        self.md_textBrowser.setMarkdown(open_md_file(r'Template/EntryTemplate',r'NeuralNetwork.md'))
+        self.md_textBrowser.setHtml(open_md_file(r'Template/EntryTemplate',r'NeuralNetwork.md'))
 
 
 if __name__ == '__main__':

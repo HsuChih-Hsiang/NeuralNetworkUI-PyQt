@@ -38,6 +38,7 @@ def open_md_file(file_dir: str, file_name: str):
     try:
         with open(get_setting_path(file_dir, file_name), 'r', encoding="utf-8") as file:
             data = markdown(file.read())
+
         return data
 
     except IOError as e:
