@@ -25,7 +25,7 @@ class LoginDialog(QDialog, login_ui.Ui_Dialog):
         response = requests.post(
             url,
             json=payloads,
-            headers={"content-type": "application/json"}
+            headers={"Content-Type": "application/json"}
         )
 
         if response.status_code == 200:
