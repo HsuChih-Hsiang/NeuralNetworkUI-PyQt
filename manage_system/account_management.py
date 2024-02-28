@@ -1,4 +1,4 @@
-import UI2Python.account_management_ui as account_management
+import UI2Python.system_management_ui as system_management
 from utility.ConfigFileIO import get_token
 import json
 import sys
@@ -6,11 +6,11 @@ import requests
 from PySide6.QtWidgets import *
 
 
-class AccountManagementMainWindow(QWidget, account_management):
+class AccountManagementMainWindow(QWidget, system_management):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setupUi(self)
-        self.setWindowTitle("account_management")
+        self.setWindowTitle("system_management")
         # self.extra = extra
 
         self.initial_configuration()
