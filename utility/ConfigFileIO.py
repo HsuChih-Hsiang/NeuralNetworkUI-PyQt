@@ -28,7 +28,7 @@ def get_token():
     try:
         with open(get_setting_path()) as token:
             data = yaml.load(token, Loader=yaml.FullLoader)
-        base_token = data.get('token', None)
+        base_token = data.get('jwt_token', None)
         bearer_token = ('Bearer ' + str(base_token)) if base_token else None
         return bearer_token
 

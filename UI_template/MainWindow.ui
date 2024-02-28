@@ -26,7 +26,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="account_management_btn">
+   <widget class="QPushButton" name="system_management_btn">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -75,7 +75,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="neural_network_0_to_1">
+   <widget class="QPushButton" name="neural_network_0_to_1_btn">
     <property name="geometry">
      <rect>
       <x>0</x>

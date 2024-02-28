@@ -34,18 +34,6 @@ class Ui_Form(object):
         self.gridLayout_2 = QGridLayout(self.tab)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.account_table = QTableWidget(self.tab)
-        if (self.account_table.columnCount() < 5):
-            self.account_table.setColumnCount(5)
-        __qtablewidgetitem = QTableWidgetItem()
-        self.account_table.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        self.account_table.setHorizontalHeaderItem(1, __qtablewidgetitem1)
-        __qtablewidgetitem2 = QTableWidgetItem()
-        self.account_table.setHorizontalHeaderItem(2, __qtablewidgetitem2)
-        __qtablewidgetitem3 = QTableWidgetItem()
-        self.account_table.setHorizontalHeaderItem(3, __qtablewidgetitem3)
-        __qtablewidgetitem4 = QTableWidgetItem()
-        self.account_table.setHorizontalHeaderItem(4, __qtablewidgetitem4)
         self.account_table.setObjectName(u"account_table")
 
         self.gridLayout_2.addWidget(self.account_table, 0, 0, 1, 1)
@@ -105,16 +93,6 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        ___qtablewidgetitem = self.account_table.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("Form", u"id", None));
-        ___qtablewidgetitem1 = self.account_table.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("Form", u"account", None));
-        ___qtablewidgetitem2 = self.account_table.horizontalHeaderItem(2)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("Form", u"name", None));
-        ___qtablewidgetitem3 = self.account_table.horizontalHeaderItem(3)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("Form", u"admin", None));
-        ___qtablewidgetitem4 = self.account_table.horizontalHeaderItem(4)
-        ___qtablewidgetitem4.setText(QCoreApplication.translate("Form", u"read_only", None));
         self.edit_btn.setText(QCoreApplication.translate("Form", u"\u9001\u51fa\u4fee\u6539", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("Form", u"\u5e33\u865f\u7ba1\u7406", None))
         self.edit_description_btn.setText(QCoreApplication.translate("Form", u"\u4fee\u6539\u5167\u5bb9\u63cf\u8ff0", None))
