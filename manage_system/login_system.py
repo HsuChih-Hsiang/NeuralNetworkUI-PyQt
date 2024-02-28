@@ -2,7 +2,7 @@ import UI2Python.create_account_ui as register_ui
 from PySide6.QtWidgets import *
 import requests
 import UI2Python.login_ui as login_ui
-import main_window as major_window
+from main_window import MainWindow
 from utility.ConfigFileIO import save_token
 
 
@@ -36,7 +36,7 @@ class LoginDialog(QDialog, login_ui.Ui_Dialog):
             if result:
                 # 利用 self 將其 instance, 否則依執行就會被回收
                 # 寫在 __init__ 會在執行時直接出現畫面
-                self.main_win = major_window.MainWindow()
+                self.main_win = MainWindow()
                 self.main_win.show()
             else:
                 QMessageBox.warning(self, "Warning", "config 檔缺失或所毀,請檢查檔案正確性")

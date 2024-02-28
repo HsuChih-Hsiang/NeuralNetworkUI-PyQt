@@ -1,62 +1,68 @@
-import UI2Python.system_management_ui as system_management
+import UI2Python.system_management_ui as system_management_ui
 from utility.ConfigFileIO import get_token
-import json
-import sys
 import requests
 from PySide6.QtWidgets import *
+from PySide6.QtCore import *
+from PySide6.QtGui import *
 
 
-class AccountManagementMainWindow(QWidget, system_management):
+class SystemManagement(QWidget, system_management_ui.Ui_Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setupUi(self)
         self.setWindowTitle("system_management")
-        # self.extra = extra
+        self.header_text = [u"user_id", u"account", u"name", u"admin", u"read_only"]
+        self.editable_header_text = [u"name", u"admin", u"read_only"]
+        self.checkbox_header_text = [u"admin", u"read_only"]
 
         self.initial_configuration()
-
-        self.pushButton_refresh.clicked.connect(self.initial_configuration)
-        self.pushButton_edit.clicked.connect(self.modify_account_info)
-        self.pushButton_CreateAccount.clicked.connect(self.create_account)
-        self.pushButton_AuthorityManagement.clicked.connect(self.authority_management)
-        self.account_tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.account_tableWidget.customContextMenuRequested.connect(self.side_menu)
+        # self.pushButton_edit.clicked.connect(self.modify_account_info)
+        # self.pushButton_CreateAccount.clicked.connect(self.create_account)
+        # self.pushButton_AuthorityManagement.clicked.connect(self.authority_management)
+        # self.account_tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        # self.account_tableWidget.customContextMenuRequested.connect(self.side_menu)
 
         self.show()
 
     # 初始化設定
     def initial_configuration(self):
-        self.account_tableWidget.clearContents()
-        url = "http://127.0.0.1/member/permission"
+        self.account_table.clear()
+        self.account_table.setColumnCount(len(self.header_text))
+        self.account_table.setHorizontalHeaderLabels(self.header_text)
+        url = "http://127.0.0.1:8000/member/permission"
         response = requests.get(url, headers={"Authorization": get_token(), "Content-Type": "application/json"})
-        db_json = response.json()
-        arr = db_json["account_db"]
+        datas = response.json()
+        account_data = datas.get('result', None)
 
-        # 根據現有 row 的數量決定要插入多少 row
-        rows = self.account_tableWidget.rowCount()
-        if rows < len(arr):
-            for i in range(len(arr) - rows):
-                # 讀取現在有幾個 row 後,再往後插入
-                row_position = self.account_tableWidget.rowCount()
-                self.account_tableWidget.insertRow(row_position)
+        if response.status_code == 200:
+            for row_cnt, row_data in enumerate(account_data):
+                self.account_table.insertRow(row_cnt)
+                for key, value in row_data.items():
+                    col = self.header_text.index(key)
+                    item = QTableWidgetItem(str(value))
 
-        for i in range(len(arr)):
-            for j in range(len(arr[i])):
-                if j <= 1:
-                    item = QTableWidgetItem(str(arr[i][j]))
-                    self.account_tableWidget.setItem(i, j, item)
-                    if j == 0:
-                        # 設定第一欄帳號無法被編輯
+                    if key not in self.editable_header_text:
+                        # 設定為不可編輯
                         item.setFlags(Qt.ItemIsEditable)
+                    if key in self.checkbox_header_text:
+                        # 設定為 checkbox
+                        value = bool(value)
+                        if value:
+                            value = ''
+                            item.setCheckState(Qt.Checked)
+                        else:
+                            value = ''
+                            item.setCheckState(Qt.Unchecked)
+                    item.setText(str(value))
+                    self.account_table.setItem(row_cnt, col, item)
+        else:
+            QMessageBox.warning(self, "Warning", "權限不足或連線失敗")
 
-                else:
-                    item = QTableWidgetItem("")
-                    # 根據原本的權限設定決定是否被 check
-                    if arr[i][j]:
-                        item.setCheckState(Qt.Checked)
-                    else:
-                        item.setCheckState(Qt.Unchecked)
-                    self.account_tableWidget.setItem(i, j, item)
+    def register_window(self):
+        from main_window import MainWindow
+        self.close()
+        self.mainwindow = MainWindow()
+        self.mainwindow.show()
 
     def modify_account_info(self):
         url2 = f"http://{host}/permission_setting"
@@ -99,14 +105,11 @@ class AccountManagementMainWindow(QWidget, system_management):
                 self.account_tableWidget.setItem(index.row(), i, item)
 
     def side_menu(self, pos):
-        cur_index = self.account_tableWidget.indexAt(pos)
-        if cur_index.isValid():
-            menu = QMenu()
-            action_1 = QAction("修改密碼")
-            menu.addAction(action_1)
-            action_1.triggered.connect(self.change_password_dialog)
-
-            menu.exec(QCursor.pos())
+        menu = QMenu()
+        action_1 = QAction("修改密碼")
+        menu.addAction(action_1)
+        action_1.triggered.connect(self.change_password_dialog)
+        menu.exec(QCursor.pos())
 
     def change_password_dialog(self):
         # 取得目前所要更改密碼的帳號及使用者
@@ -114,9 +117,3 @@ class AccountManagementMainWindow(QWidget, system_management):
         self.account = self.account_tableWidget.item(row_index.row(), 0).text()
         self.user = self.account_tableWidget.item(row_index.row(), 1).text()
         self.cpm = ChangePasswordMainWindow(account=self.account, user=self.user)
-
-
-if __name__ == "__main__":
-    app = QApplication()
-    account_management_window = AccountManagementMainWindow()
-    sys.exit(app.exec())
