@@ -35,7 +35,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.account_table.setColumnCount(len(self.header_text))
         self.account_table.setHorizontalHeaderLabels(self.header_text)
 
-    def initial_configuration(self, response=None):
+    def initial_configuration(self, response:requests = None):
         if response is None:
             url = "http://127.0.0.1:8000/member/permission"
             response = requests.get(url, headers={"Authorization": get_token(), "Content-Type": "application/json"})
