@@ -91,7 +91,7 @@ class RegisterDialog(QDialog, register_ui.Ui_Dialog):
                 if result:
                     # 利用 self 將其 instance, 否則依執行就會被回收
                     # 寫在 __init__ 會在執行時直接出現畫面
-                    self.main_win = major_window.MainWindow()
+                    self.main_win = MainWindow()
                     self.main_win.show()
                 else:
                     QMessageBox.warning(self, "Warning", "config 檔缺失或所毀,請檢查檔案正確性")
