@@ -30,10 +30,12 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
     # 初始化設定
     def initial_setting(self):
         self.account_table.clear()
+        # 防止因 inset row , row number 一直上升
+        self.account_table.setRowCount(0)
         self.account_table.setColumnCount(len(self.header_text))
         self.account_table.setHorizontalHeaderLabels(self.header_text)
 
-    def initial_configuration(self, response:requests = None):
+    def initial_configuration(self, response=None):
         if response is None:
             url = "http://127.0.0.1:8000/member/permission"
             response = requests.get(url, headers={"Authorization": get_token(), "Content-Type": "application/json"})
@@ -58,10 +60,10 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
                             item.setCheckState(Qt.Checked)
                         else:
                             item.setCheckState(Qt.Unchecked)
-                        item.setText(str(value) if not isinstance(value,bool) else '')
+                        item.setText(str(value) if not isinstance(value, bool) else '')
                     self.account_table.setItem(row_cnt, col, item)
         else:
-            QMessageBox.warning("Warning", "權限不足或連線失敗")
+            QMessageBox.warning(self, "Warning", "權限不足或連線失敗")
 
     def closeEvent(self, event):
         from main_window import MainWindow
@@ -71,34 +73,42 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
     def catch_modify(self):
         # 記住有改動的 row
         row_index = self.account_table.currentIndex()
-        self.modify_row.add(row_index.row())
+        # TableWidget 將 item 轉為
+        if row_index.row() >= 0:
+            self.modify_row.add(row_index.row())
 
     def modify_account_info(self):
-        modify_row = list(self.modify_row)
-        data = list()
-        for row in modify_row:
-            row_data = list()
-            for col in range(len(self.header_text)):
-                update_data = self.account_table.item(row, col)
-                if self.header_text[col] in self.checkbox_header_text:
-                    state = update_data.checkState()
-                    if state == Qt.Checked:
-                        row_data.append(True)
+        try:
+            modify_row = list(self.modify_row)
+            data = list()
+            for row in modify_row:
+                row_data = list()
+                for col in range(len(self.header_text)):
+                    update_data = self.account_table.item(row, col)
+                    if self.header_text[col] in self.checkbox_header_text:
+                        state = update_data.checkState()
+                        if state == Qt.Checked:
+                            row_data.append(True)
+                        else:
+                            row_data.append(False)
+                    elif self.header_text[col] == u'user_id':
+                        row_data.append(int(update_data.text()))
                     else:
-                        row_data.append(False)
-                elif self.header_text[col] == u'user_id':
-                    row_data.append(int(update_data.text()))
-                else:
-                    row_data.append(update_data.text())
-            data.append(dict(zip(self.header_text, row_data)))
-        print(data)
-        url = "http://127.0.0.1:8000/member/permission"
-        response = requests.post(
-            url,
-            json={"permission_data": data},
-            headers={"Authorization": get_token(), "Content-Type": "application/json"}
-        )
-        self.initial_configuration(response=response)
+                        row_data.append(update_data.text())
+                data.append(dict(zip(self.header_text, row_data)))
+            # 清空修改過的 set
+            self.modify_row = set()
+            url = "http://127.0.0.1:8000/member/permission"
+            response = requests.post(
+                url,
+                json={"permission_data": data},
+                headers={"Authorization": get_token(), "Content-Type": "application/json"}
+            )
+            self.initial_configuration(response=response)
+
+        except Exception as e:
+            QMessageBox.warning(self, "Warning", "未正確選取欄位")
+            self.initial_configuration()
 
     def side_menu(self):
         menu = QMenu()
