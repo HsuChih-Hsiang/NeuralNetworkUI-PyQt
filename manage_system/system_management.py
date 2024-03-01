@@ -12,8 +12,8 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.setupUi(self)
         # table widget setting
         self.setWindowTitle("system_management")
-        self.header_text = [u"user_id", u"account", u"name", u"admin", u"read_only"]
-        self.editable_header_text = [u"name", u"admin", u"read_only"]
+        self.header_text = [u"user_id", u"account", u"name", u"email", u"admin", u"read_only"]
+        self.editable_header_text = [u"name", u"email",u"admin", u"read_only"]
         self.checkbox_header_text = [u"admin", u"read_only"]
         self.modify_row = set()
 
