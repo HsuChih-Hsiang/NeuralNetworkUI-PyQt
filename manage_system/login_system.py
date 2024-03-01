@@ -71,12 +71,17 @@ class RegisterDialog(QDialog, register_ui.Ui_Dialog):
         password = self.password_lineEdit.text()
         confirm_password = self.compassword_lineEdit.text()
         name = self.name_lineEdit.text()
+        email = self.email_lineEdit.text()
 
         if password != confirm_password:
             QMessageBox.warning(self, "Warning", "密碼不一致")
 
         else:
             payloads = {"account": account, "password": password, "name": name}
+
+            if email:
+                payloads.update({'email': email})
+
             response = requests.post(
                 url,
                 json=payloads,

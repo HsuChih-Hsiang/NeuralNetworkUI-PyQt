@@ -23,22 +23,22 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(260, 160)
-        Dialog.setMinimumSize(QSize(260, 160))
-        Dialog.setMaximumSize(QSize(260, 160))
+        Dialog.resize(260, 184)
+        Dialog.setMinimumSize(QSize(260, 184))
+        Dialog.setMaximumSize(QSize(260, 184))
         self.gridLayout = QGridLayout(Dialog)
         self.gridLayout.setObjectName(u"gridLayout")
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.label_13 = QLabel(Dialog)
-        self.label_13.setObjectName(u"label_13")
-        self.label_13.setMinimumSize(QSize(50, 0))
-        self.label_13.setMaximumSize(QSize(16777215, 16777215))
-        self.label_13.setAlignment(Qt.AlignCenter)
+        self.label_4 = QLabel(Dialog)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setMinimumSize(QSize(50, 0))
+        self.label_4.setMaximumSize(QSize(16777215, 16777215))
+        self.label_4.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout_4.addWidget(self.label_13)
+        self.horizontalLayout_4.addWidget(self.label_4)
 
         self.name_lineEdit = QLineEdit(Dialog)
         self.name_lineEdit.setObjectName(u"name_lineEdit")
@@ -51,16 +51,16 @@ class Ui_Dialog(object):
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.label_10 = QLabel(Dialog)
-        self.label_10.setObjectName(u"label_10")
-        self.label_10.setMinimumSize(QSize(50, 0))
-        self.label_10.setMaximumSize(QSize(16777215, 16777215))
+        self.label_1 = QLabel(Dialog)
+        self.label_1.setObjectName(u"label_1")
+        self.label_1.setMinimumSize(QSize(50, 0))
+        self.label_1.setMaximumSize(QSize(16777215, 16777215))
         font = QFont()
         font.setWeight(QFont.Medium)
-        self.label_10.setFont(font)
-        self.label_10.setAlignment(Qt.AlignCenter)
+        self.label_1.setFont(font)
+        self.label_1.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout.addWidget(self.label_10)
+        self.horizontalLayout.addWidget(self.label_1)
 
         self.account_lineEdit = QLineEdit(Dialog)
         self.account_lineEdit.setObjectName(u"account_lineEdit")
@@ -72,14 +72,32 @@ class Ui_Dialog(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.label_5 = QLabel(Dialog)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setMinimumSize(QSize(50, 0))
+        self.label_5.setAlignment(Qt.AlignCenter)
+
+        self.horizontalLayout_5.addWidget(self.label_5)
+
+        self.email_lineEdit = QLineEdit(Dialog)
+        self.email_lineEdit.setObjectName(u"email_lineEdit")
+        self.email_lineEdit.setMaxLength(20)
+
+        self.horizontalLayout_5.addWidget(self.email_lineEdit)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_5)
+
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.label_12 = QLabel(Dialog)
-        self.label_12.setObjectName(u"label_12")
-        self.label_12.setMinimumSize(QSize(50, 0))
-        self.label_12.setAlignment(Qt.AlignCenter)
+        self.label_3 = QLabel(Dialog)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setMinimumSize(QSize(50, 0))
+        self.label_3.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout_3.addWidget(self.label_12)
+        self.horizontalLayout_3.addWidget(self.label_3)
 
         self.password_lineEdit = QLineEdit(Dialog)
         self.password_lineEdit.setObjectName(u"password_lineEdit")
@@ -92,12 +110,12 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_11 = QLabel(Dialog)
-        self.label_11.setObjectName(u"label_11")
-        self.label_11.setMinimumSize(QSize(50, 0))
-        self.label_11.setAlignment(Qt.AlignCenter)
+        self.label_2 = QLabel(Dialog)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setMinimumSize(QSize(50, 0))
+        self.label_2.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout_2.addWidget(self.label_11)
+        self.horizontalLayout_2.addWidget(self.label_2)
 
         self.compassword_lineEdit = QLineEdit(Dialog)
         self.compassword_lineEdit.setObjectName(u"compassword_lineEdit")
@@ -124,10 +142,11 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
-        self.label_13.setText(QCoreApplication.translate("Dialog", u"\u59d3\u540d", None))
-        self.label_10.setText(QCoreApplication.translate("Dialog", u"\u5e33\u865f", None))
-        self.label_12.setText(QCoreApplication.translate("Dialog", u"\u5bc6\u78bc", None))
-        self.label_11.setText(QCoreApplication.translate("Dialog", u"\u78ba\u8a8d\u5bc6\u78bc", None))
+        self.label_4.setText(QCoreApplication.translate("Dialog", u"\u59d3\u540d", None))
+        self.label_1.setText(QCoreApplication.translate("Dialog", u"\u5e33\u865f", None))
+        self.label_5.setText(QCoreApplication.translate("Dialog", u"\u96fb\u5b50\u4fe1\u7bb1", None))
+        self.label_3.setText(QCoreApplication.translate("Dialog", u"\u5bc6\u78bc", None))
+        self.label_2.setText(QCoreApplication.translate("Dialog", u"\u78ba\u8a8d\u5bc6\u78bc", None))
         self.confirm_btn.setText(QCoreApplication.translate("Dialog", u"\u78ba\u8a8d", None))
     # retranslateUi
 
