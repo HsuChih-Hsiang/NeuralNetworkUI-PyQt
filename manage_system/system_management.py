@@ -22,8 +22,8 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.edit_btn.clicked.connect(self.modify_account_info)
 
         # tree widget setting
-        self.account_table.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.account_table.customContextMenuRequested.connect(self.side_menu)
+        self.treeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.treeWidget.customContextMenuRequested.connect(self.side_menu)
 
         self.show()
 
@@ -112,16 +112,17 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
     def side_menu(self):
         menu = QMenu()
-        action_1 = QAction("修改密碼")
+        action_1 = QAction("新增子節點")
         menu.addAction(action_1)
-        action_2 = QAction("不修改密碼")
+        action_2 = QAction("修改子節點")
         menu.addAction(action_2)
-        action_1.triggered.connect(self.change_password_dialog)
+        action_1.triggered.connect(self.add_node)
+        action_2.triggered.connect(self.update_node)
         menu.exec(QCursor.pos())
 
-    def change_password_dialog(self):
-        # 取得目前所要更改密碼的帳號及使用者
-        row_index = self.account_tableWidget.currentIndex()
-        self.account = self.account_tableWidget.item(row_index.row(), 0).text()
-        self.user = self.account_tableWidget.item(row_index.row(), 1).text()
-        self.cpm = ChangePasswordMainWindow(account=self.account, user=self.user)
+    def add_node(self):
+        pass
+
+    def update_node(self):
+        pass
+
