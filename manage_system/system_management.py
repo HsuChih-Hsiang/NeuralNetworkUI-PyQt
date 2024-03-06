@@ -21,11 +21,20 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.account_table.itemChanged.connect(self.catch_modify)
         self.edit_btn.clicked.connect(self.modify_account_info)
 
+        # tabWidget setting
+        self.tabWidget.tabBarClicked.connect(self.tab_change_init)
+
         # tree widget setting
         self.treeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.treeWidget.customContextMenuRequested.connect(self.side_menu)
 
         self.show()
+
+    def tab_change_init(self):
+        if self.tabWidget.currentIndex() == 0:
+            self.initial_configuration()
+        else:
+            pass
 
     # 初始化設定
     def initial_setting(self):
@@ -67,8 +76,8 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
     def closeEvent(self, event):
         from main_window import MainWindow
-        self.mainwindow = MainWindow()
-        self.mainwindow.show()
+        self.main_window = MainWindow()
+        self.main_window.show()
 
     def catch_modify(self):
         # 記住有改動的 row
@@ -107,7 +116,8 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             self.initial_configuration(response=response)
 
         except Exception as e:
-            QMessageBox.warning(self, "Warning", "未正確選取欄位")
+            print(e)
+            QMessageBox.warning(self, "Warning", text="未正確選取欄位")
             self.initial_configuration()
 
     def side_menu(self):
@@ -125,4 +135,3 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
     def update_node(self):
         pass
-
