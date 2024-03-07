@@ -22,17 +22,25 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.edit_btn.clicked.connect(self.modify_account_info)
 
         # tabWidget setting
-        self.tabWidget.tabBarClicked.connect(self.tab_change_init)
+        self.tabWidget.currentChanged.connect(self.tab_change_init)
 
         # tree widget setting
+        self.tree_header = ['name', 'layer', 'layer_id', 'is_description']
+        self.get_data_header = ['layer', 'layer_id']
+
+        self.treeWidget.setColumnCount(len(self.tree_header))
+        self.treeWidget.setHeaderLabels(self.tree_header)
         self.treeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.treeWidget.customContextMenuRequested.connect(self.side_menu)
+        self.treeWidget.itemExpanded.connect(self.get_node)
 
         self.show()
 
     def tab_change_init(self):
         if self.tabWidget.currentIndex() == 0:
             self.initial_configuration()
+        elif self.tabWidget.currentIndex() == 1:
+            self.get_init_node()
         else:
             pass
 
@@ -131,7 +139,48 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         menu.exec(QCursor.pos())
 
     def add_node(self):
-        pass
+        print(self.treeWidget.text(self.treeWidget.currentIndex()))
 
     def update_node(self):
         pass
+
+    def get_init_node(self):
+        self.treeWidget.clear()
+        try:
+            url = "http://127.0.0.1:8000/layer_label/topic"
+            response = requests.get(
+                url,
+                headers={"Authorization": get_token(), "Content-Type": "application/json"}
+            )
+
+            if response.status_code == 200:
+                node_list = response.json().get('result')
+                for node in node_list:
+                    item = QTreeWidgetItem(self.treeWidget)
+                    item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+                    for key, value in node.items():
+                        if key in self.tree_header:
+                            index = self.tree_header.index(key)
+                            if isinstance(value, bool):
+                                if value:
+                                    item.setCheckState(index, Qt.Checked)
+                                else:
+                                    item.setCheckState(index, Qt.Unchecked)
+                            else:
+                                item.setText(index, str(value))
+
+            elif response.status_code == 401:
+                QMessageBox.warning(self, "Warning", text="權限不足")
+
+        except ConnectionError as e:
+            print(e)
+            QMessageBox.warning(self, "Warning", text="連線失敗")
+
+    def get_node(self, item):
+        for i in reversed(range(item.childCount())):
+            item.takeChild(i)
+
+        for data in self.get_data_header:
+            index = self.tree_header.index(data)
+        print(item.text(1))
+

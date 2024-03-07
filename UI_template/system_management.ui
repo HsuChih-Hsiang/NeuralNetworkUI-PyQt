@@ -95,17 +95,7 @@
          </property>
          <column>
           <property name="text">
-           <string>label</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>layer_id</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>have_description</string>
+           <string notr="true">1</string>
           </property>
          </column>
         </widget>
