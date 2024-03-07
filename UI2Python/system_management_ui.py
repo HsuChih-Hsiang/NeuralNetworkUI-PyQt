@@ -72,6 +72,9 @@ class Ui_Form(object):
         self.gridLayout_4.addWidget(self.delete_btn, 2, 1, 1, 1)
 
         self.treeWidget = QTreeWidget(self.tab_2)
+        __qtreewidgetitem = QTreeWidgetItem()
+        __qtreewidgetitem.setText(0, u"1");
+        self.treeWidget.setHeaderItem(__qtreewidgetitem)
         self.treeWidget.setObjectName(u"treeWidget")
         self.treeWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.treeWidget.setProperty("showDropIndicator", True)
@@ -97,10 +100,6 @@ class Ui_Form(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("Form", u"\u5e33\u865f\u7ba1\u7406", None))
         self.edit_description_btn.setText(QCoreApplication.translate("Form", u"\u4fee\u6539\u5167\u5bb9\u63cf\u8ff0", None))
         self.delete_btn.setText(QCoreApplication.translate("Form", u"\u522a\u9664\u52fe\u9078\u9805\u76ee", None))
-        ___qtreewidgetitem = self.treeWidget.headerItem()
-        ___qtreewidgetitem.setText(2, QCoreApplication.translate("Form", u"have_description", None));
-        ___qtreewidgetitem.setText(1, QCoreApplication.translate("Form", u"layer_id", None));
-        ___qtreewidgetitem.setText(0, QCoreApplication.translate("Form", u"label", None));
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("Form", u"\u6df1\u5ea6\u5b78\u7fd2\u5167\u5bb9\u7ba1\u7406", None))
     # retranslateUi
 
