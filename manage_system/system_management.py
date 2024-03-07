@@ -13,7 +13,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         # table widget setting
         self.setWindowTitle("system_management")
         self.header_text = [u"user_id", u"account", u"name", u"email", u"admin", u"read_only"]
-        self.editable_header_text = [u"name", u"email",u"admin", u"read_only"]
+        self.editable_header_text = [u"name", u"email", u"admin", u"read_only"]
         self.checkbox_header_text = [u"admin", u"read_only"]
         self.modify_row = set()
 
@@ -52,7 +52,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.account_table.setColumnCount(len(self.header_text))
         self.account_table.setHorizontalHeaderLabels(self.header_text)
 
-    def initial_configuration(self, response:requests = None):
+    def initial_configuration(self, response: requests = None):
         if response is None:
             url = "http://127.0.0.1:8000/member/permission"
             response = requests.get(url, headers={"Authorization": get_token(), "Content-Type": "application/json"})
@@ -180,7 +180,50 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         for i in reversed(range(item.childCount())):
             item.takeChild(i)
 
+        url_data = dict()
         for data in self.get_data_header:
             index = self.tree_header.index(data)
-        print(item.text(1))
+            url_data.update(dict({data: item.text(index)}))
 
+        layer = url_data.get('layer')
+        layer_id = url_data.get('layer')
+
+        if layer == '4':
+            return 0
+
+        if layer == '1':
+            url = f"http://127.0.0.1:8000/layer_label/subtopic"
+        elif layer == '2':
+            url = f"http://127.0.0.1:8000/layer_label/model_class"
+        else:
+            url = f"http://127.0.0.1:8000/layer_label/model_detail"
+
+        try:
+            url = f"{url}/{layer_id}"
+            response = requests.get(
+                url,
+                headers={"Authorization": get_token(), "Content-Type": "application/json"}
+            )
+
+            if response.status_code == 200:
+                node_list = response.json().get('result')
+                for node in node_list:
+                    item = QTreeWidgetItem(self.treeWidget)
+                    item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+                    for key, value in node.items():
+                        if key in self.tree_header:
+                            index = self.tree_header.index(key)
+                            if isinstance(value, bool):
+                                if value:
+                                    item.setCheckState(index, Qt.Checked)
+                                else:
+                                    item.setCheckState(index, Qt.Unchecked)
+                            else:
+                                item.setText(index, str(value))
+
+            elif response.status_code == 401:
+                QMessageBox.warning(self, "Warning", text="權限不足")
+
+        except ConnectionError as e:
+            print(e)
+            QMessageBox.warning(self, "Warning", text="連線失敗")
