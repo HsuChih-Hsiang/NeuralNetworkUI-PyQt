@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import *
 import UI2Python.MainWindow_ui as mainUI
 from manage_system import system_management as system
-from utility.ConfigFileIO import open_md_file
+from utility.config_file_io import open_config_file
 
 
 class MainWindow(QMainWindow, mainUI.Ui_MainWindow):
@@ -16,10 +16,14 @@ class MainWindow(QMainWindow, mainUI.Ui_MainWindow):
         self.system_management_btn.clicked.connect(self.enter_system_management)
 
     def show_account_describe(self, event):
-        self.md_textBrowser.setHtml(open_md_file(r'Template/EntryTemplate',r'Management.md'))
+        self.md_textBrowser.setHtml(
+            open_config_file(r'Template/EntryTemplate',r'Management.md', 'md')
+        )
 
     def show_nn_describe(self, event):
-        self.md_textBrowser.setHtml(open_md_file(r'Template/EntryTemplate',r'NeuralNetwork.md'))
+        self.md_textBrowser.setHtml(
+            open_config_file(r'Template/EntryTemplate', r'NeuralNetwork.md', 'md')
+        )
 
     def enter_system_management(self):
         self.close()

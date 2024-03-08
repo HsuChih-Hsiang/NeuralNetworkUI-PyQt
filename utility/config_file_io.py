@@ -36,12 +36,21 @@ def get_token():
         return None
 
 
-def open_md_file(file_dir: str, file_name: str):
+def open_config_file(file_dir: str, file_name: str, data_type: str):
+    if data_type not in ['md', 'yaml']:
+        raise ValueError
     try:
-        with open(get_setting_path(file_dir, file_name), 'r', encoding="utf-8") as file:
-            data = markdown(file.read())
+        if data_type == 'md':
+            with open(get_setting_path(file_dir, file_name), 'r', encoding="utf-8") as file:
+                data = markdown(file.read())
+        else:
+            with open(get_setting_path(file_dir, file_name)) as token:
+                data = yaml.load(token, Loader=yaml.FullLoader)
 
         return data
 
-    except IOError as e:
+    except IOError:
+        return False
+
+    except ValueError:
         return False

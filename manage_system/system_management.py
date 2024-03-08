@@ -1,5 +1,6 @@
 import UI2Python.system_management_ui as system_management_ui
-from utility.ConfigFileIO import get_token
+from utility.config_file_io import get_token
+from utility.urls import Urls
 import requests
 from PySide6.QtWidgets import *
 from PySide6.QtCore import *
@@ -54,7 +55,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
     def initial_configuration(self, response: requests = None):
         if response is None:
-            url = "http://127.0.0.1:8000/member/permission"
+            url = f'{Urls.PERMISSION_API}'
             response = requests.get(url, headers={"Authorization": get_token(), "Content-Type": "application/json"})
 
         datas = response.json()
@@ -115,7 +116,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
                 data.append(dict(zip(self.header_text, row_data)))
             # 清空修改過的 set
             self.modify_row = set()
-            url = "http://127.0.0.1:8000/member/permission"
+            url = f'{Urls.PERMISSION_API}'
             response = requests.post(
                 url,
                 json={"permission_data": data},
@@ -147,7 +148,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
     def get_init_node(self):
         self.treeWidget.clear()
         try:
-            url = "http://127.0.0.1:8000/layer_label/topic"
+            url = f'{Urls.TOPIC_API}'
             response = requests.get(
                 url,
                 headers={"Authorization": get_token(), "Content-Type": "application/json"}
@@ -188,18 +189,18 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         layer = url_data.get('layer')
         layer_id = url_data.get('layer')
 
-        if layer == '4':
+        if layer not in ['1', '2', '3']:
             return 0
 
         if layer == '1':
-            url = f"http://127.0.0.1:8000/layer_label/subtopic"
+            url = f'{Urls.SUBTOPIC_API}'
         elif layer == '2':
-            url = f"http://127.0.0.1:8000/layer_label/model_class"
+            url = f'{Urls.MODEL_CLASS_API}'
         else:
-            url = f"http://127.0.0.1:8000/layer_label/model_detail"
+            url = f'{Urls.MODEL_DETAIL_API}'
 
         try:
-            url = f"{url}/{layer_id}"
+            url = f'{url}/{layer_id}'
             response = requests.get(
                 url,
                 headers={"Authorization": get_token(), "Content-Type": "application/json"}
