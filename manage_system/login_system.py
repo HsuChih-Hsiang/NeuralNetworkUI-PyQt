@@ -3,7 +3,8 @@ from PySide6.QtWidgets import *
 import requests
 import UI2Python.login_ui as login_ui
 from main_window import MainWindow
-from utility.ConfigFileIO import save_token
+from utility.config_file_io import save_token
+from utility.urls import Urls
 
 
 class LoginDialog(QDialog, login_ui.Ui_Dialog):
@@ -17,7 +18,7 @@ class LoginDialog(QDialog, login_ui.Ui_Dialog):
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
 
     def login_fuc(self):
-        url = "http://127.0.0.1:8000/member/login"
+        url = f'{Urls.LOGIN_API}'
         account = self.account_input.text()
         password = self.password_input.text()
 
@@ -66,7 +67,7 @@ class RegisterDialog(QDialog, register_ui.Ui_Dialog):
         self.login_ui.show()
 
     def register_func(self):
-        url = "http://127.0.0.1:8000/member/register"
+        url = f'{Urls.REGISTER_API}'
         account = self.account_lineEdit.text()
         password = self.password_lineEdit.text()
         confirm_password = self.compassword_lineEdit.text()
