@@ -18,4 +18,4 @@ class Urls(Enum):
         env = open_config_file('setting', 'env.yaml', 'yaml')
         host = env.get('host')
         port = env.get('port')
-        return f'{host}:{port}/{self.value}'
+        return f"{host}{f':{port}' if port else ''}/{self.value}"
