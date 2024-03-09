@@ -1,9 +1,10 @@
 from PySide6.QtWidgets import *
 import UI2Python.MainWindow_ui as mainUI
 from manage_system import system_management as system
-from utility.config_file_io import open_config_file
+from utility.config_file_io import open_config_file, get_token
 from utility.urls import Urls
 import requests
+
 
 class MainWindow(QMainWindow, mainUI.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -31,7 +32,7 @@ class MainWindow(QMainWindow, mainUI.Ui_MainWindow):
             url = f'{Urls.LOGIN_API}'
             response = requests.get(
                 url,
-                headers={"Content-Type": "application/json"}
+                headers={"Authorization": get_token(),"Content-Type": "application/json"}
             )
             if response.status_code == 200:
                 self.close()
