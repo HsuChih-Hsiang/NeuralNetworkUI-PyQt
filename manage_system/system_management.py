@@ -140,7 +140,8 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         menu.exec(QCursor.pos())
 
     def add_node(self):
-        print(self.treeWidget.text(self.treeWidget.currentIndex()))
+        print(self.treeWidget.currentIndex())
+        selected_item = self.treeWidget.selectedItems()
 
     def update_node(self):
         pass
@@ -177,17 +178,17 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             print(e)
             QMessageBox.warning(self, "Warning", text="連線失敗")
 
-    def get_node(self, item):
-        for i in reversed(range(item.childCount())):
-            item.takeChild(i)
+    def get_node(self, expanded_item):
+        for i in reversed(range(expanded_item.childCount())):
+            expanded_item.takeChild(i)
 
         url_data = dict()
         for data in self.get_data_header:
             index = self.tree_header.index(data)
-            url_data.update(dict({data: item.text(index)}))
+            url_data.update(dict({data: expanded_item.text(index)}))
 
         layer = url_data.get('layer')
-        layer_id = url_data.get('layer')
+        layer_id = url_data.get('layer_id')
 
         if layer not in ['1', '2', '3']:
             return 0
@@ -209,7 +210,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             if response.status_code == 200:
                 node_list = response.json().get('result')
                 for node in node_list:
-                    item = QTreeWidgetItem(self.treeWidget)
+                    item = QTreeWidgetItem(expanded_item)
                     item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
                     for key, value in node.items():
                         if key in self.tree_header:
