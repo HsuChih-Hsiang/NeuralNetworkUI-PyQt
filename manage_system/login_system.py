@@ -1,10 +1,10 @@
 import UI2Python.create_account_ui as register_ui
 from PySide6.QtWidgets import *
-import requests
 import UI2Python.login_ui as login_ui
 from main_window import MainWindow
 from utility.config_file_io import save_token
 from utility.urls import Urls
+import requests
 
 
 class LoginDialog(QDialog, login_ui.Ui_Dialog):
