@@ -2,7 +2,8 @@ from PySide6.QtWidgets import *
 import UI2Python.MainWindow_ui as mainUI
 from manage_system import system_management as system
 from utility.config_file_io import open_config_file
-
+from utility.urls import Urls
+import requests
 
 class MainWindow(QMainWindow, mainUI.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -26,6 +27,19 @@ class MainWindow(QMainWindow, mainUI.Ui_MainWindow):
         )
 
     def enter_system_management(self):
-        self.close()
-        self.system = system.SystemManagement()
-        self.system.show()
+        try:
+            url = f'{Urls.LOGIN_API}'
+            response = requests.get(
+                url,
+                headers={"Content-Type": "application/json"}
+            )
+            if response.status_code == 200:
+                self.close()
+                self.system = system.SystemManagement()
+                self.system.show()
+
+            elif response.status_code == 401:
+                QMessageBox.warning(self, "Warning", "沒有權限使用")
+
+        except ConnectionError:
+            QMessageBox.warning(self, "Warning", "連線失敗")
