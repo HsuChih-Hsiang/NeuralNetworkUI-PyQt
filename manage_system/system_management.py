@@ -151,14 +151,74 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.label_dailog.trans_label.connect(self.update_node)
 
     def add_node(self, text):
-        print(self.treeWidget.currentIndex())
-        selected_item = self.treeWidget.selectedItems()
-        print(text)
+        cur_item = self.treeWidget.currentIndex()
+
+        url = self.api_url_call(cur_item)
+
+        try:
+            response = requests.post(
+                url,
+                json={},
+                headers={"Authorization": get_token(), "Content-Type": "application/json"}
+            )
+
+            if response.status_code == 200:
+                node_list = response.json().get('result')
+                for node in node_list:
+                    item = QTreeWidgetItem(cur_item)
+                    item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+                    for key, value in node.items():
+                        if key in self.tree_header:
+                            index = self.tree_header.index(key)
+                            if isinstance(value, bool):
+                                if value:
+                                    item.setCheckState(index, Qt.Checked)
+                                else:
+                                    item.setCheckState(index, Qt.Unchecked)
+                            else:
+                                item.setText(index, str(value))
+
+            elif response.status_code == 401:
+                QMessageBox.warning(self, "Warning", text="權限不足")
+
+        except ConnectionError as e:
+            print(e)
+            QMessageBox.warning(self, "Warning", text="連線失敗")
 
     def update_node(self, text):
-        print(self.treeWidget.currentIndex())
-        selected_item = self.treeWidget.selectedItems()
-        print(text)
+        cur_item = self.treeWidget.currentIndex()
+
+        url = self.api_url_call(cur_item)
+
+        try:
+            response = requests.put(
+                url,
+                json={},
+                headers={"Authorization": get_token(), "Content-Type": "application/json"}
+            )
+
+            if response.status_code == 200:
+                node_list = response.json().get('result')
+                for node in node_list:
+                    item = QTreeWidgetItem(cur_item)
+                    item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+                    for key, value in node.items():
+                        if key in self.tree_header:
+                            index = self.tree_header.index(key)
+                            if isinstance(value, bool):
+                                if value:
+                                    item.setCheckState(index, Qt.Checked)
+                                else:
+                                    item.setCheckState(index, Qt.Unchecked)
+                            else:
+                                item.setText(index, str(value))
+
+            elif response.status_code == 401:
+                QMessageBox.warning(self, "Warning", text="權限不足")
+
+        except ConnectionError as e:
+            print(e)
+            QMessageBox.warning(self, "Warning", text="連線失敗")
 
     def get_init_node(self):
         self.treeWidget.clear()
@@ -196,23 +256,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         for i in reversed(range(expanded_item.childCount())):
             expanded_item.takeChild(i)
 
-        url_data = dict()
-        for data in self.get_data_header:
-            index = self.tree_header.index(data)
-            url_data.update(dict({data: expanded_item.text(index)}))
-
-        layer = url_data.get('layer')
-        layer_id = url_data.get('layer_id')
-
-        if layer not in ['1', '2', '3']:
-            return 0
-
-        if layer == '1':
-            url = f'{Urls.SUBTOPIC_API}/{layer_id}'
-        elif layer == '2':
-            url = f'{Urls.MODEL_CLASS_API}/{layer_id}'
-        else:
-            url = f'{Urls.MODEL_DETAIL_API}/{layer_id}'
+        url = self.api_url_call(expanded_item)
 
         try:
             response = requests.get(
@@ -242,3 +286,24 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         except ConnectionError as e:
             print(e)
             QMessageBox.warning(self, "Warning", text="連線失敗")
+
+    def api_url_call(self, item):
+        url_data = dict()
+        for data in self.get_data_header:
+            index = self.tree_header.index(data)
+            url_data.update(dict({data: item.text(index)}))
+
+        layer = url_data.get('layer')
+        layer_id = url_data.get('layer_id')
+
+        if layer not in ['1', '2', '3']:
+            return 0
+
+        if layer == '1':
+            url = f'{Urls.SUBTOPIC_API}/{layer_id}'
+        elif layer == '2':
+            url = f'{Urls.MODEL_CLASS_API}/{layer_id}'
+        else:
+            url = f'{Urls.MODEL_DETAIL_API}/{layer_id}'
+
+        return url
