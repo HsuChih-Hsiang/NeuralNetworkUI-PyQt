@@ -1,3 +1,4 @@
+from manage_system.label_dialog import AddLabelDialog
 import UI2Python.system_management_ui as system_management_ui
 from utility.config_file_io import get_token
 from utility.urls import Urls
@@ -135,16 +136,29 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         menu.addAction(action_1)
         action_2 = QAction("修改子節點")
         menu.addAction(action_2)
-        action_1.triggered.connect(self.add_node)
-        action_2.triggered.connect(self.update_node)
+        action_1.triggered.connect(self.node_signal_1)
+        action_2.triggered.connect(self.node_signal_2)
         menu.exec(QCursor.pos())
 
-    def add_node(self):
+    def node_signal_1(self):
+        self.label_dailog = AddLabelDialog()
+        self.show()
+        self.label_dailog.trans_label.connect(self.update_node)
+
+    def node_signal_2(self):
+        self.label_dailog = AddLabelDialog()
+        self.show()
+        self.label_dailog.trans_label.connect(self.update_node)
+
+    def add_node(self, text):
         print(self.treeWidget.currentIndex())
         selected_item = self.treeWidget.selectedItems()
+        print(text)
 
-    def update_node(self):
-        pass
+    def update_node(self, text):
+        print(self.treeWidget.currentIndex())
+        selected_item = self.treeWidget.selectedItems()
+        print(text)
 
     def get_init_node(self):
         self.treeWidget.clear()
@@ -194,14 +208,13 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             return 0
 
         if layer == '1':
-            url = f'{Urls.SUBTOPIC_API}'
+            url = f'{Urls.SUBTOPIC_API}/{layer_id}'
         elif layer == '2':
-            url = f'{Urls.MODEL_CLASS_API}'
+            url = f'{Urls.MODEL_CLASS_API}/{layer_id}'
         else:
-            url = f'{Urls.MODEL_DETAIL_API}'
+            url = f'{Urls.MODEL_DETAIL_API}/{layer_id}'
 
         try:
-            url = f'{url}/{layer_id}'
             response = requests.get(
                 url,
                 headers={"Authorization": get_token(), "Content-Type": "application/json"}
