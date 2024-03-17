@@ -143,7 +143,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
     def node_signal_1(self):
         self.label_dailog = AddLabelDialog()
         self.show()
-        self.label_dailog.trans_label.connect(self.update_node)
+        self.label_dailog.trans_label.connect(self.add_node)
 
     def node_signal_2(self):
         self.label_dailog = AddLabelDialog()
@@ -151,42 +151,34 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.label_dailog.trans_label.connect(self.update_node)
 
     def add_node(self, text):
-        cur_item = self.treeWidget.currentIndex()
+        cur_item = self.treeWidget.currentItem()
 
         url = self.api_url_call(cur_item)
 
-        try:
-            response = requests.post(
-                url,
-                json={},
-                headers={"Authorization": get_token(), "Content-Type": "application/json"}
-            )
+        if url:
+            try:
+                response = requests.post(
+                    url,
+                    json={"name": text},
+                    headers={"Authorization": get_token(), "Content-Type": "application/json"}
+                )
 
-            if response.status_code == 200:
-                node_list = response.json().get('result')
-                for node in node_list:
-                    item = QTreeWidgetItem(cur_item)
-                    item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
-                    for key, value in node.items():
-                        if key in self.tree_header:
-                            index = self.tree_header.index(key)
-                            if isinstance(value, bool):
-                                if value:
-                                    item.setCheckState(index, Qt.Checked)
-                                else:
-                                    item.setCheckState(index, Qt.Unchecked)
-                            else:
-                                item.setText(index, str(value))
+                if response.status_code == 200:
+                    self.delete_old_node(cur_item)
+                    node_list = response.json().get('result')
+                    for node in node_list:
+                        item = QTreeWidgetItem(cur_item)
+                        self.node_display(item, node)
 
-            elif response.status_code == 401:
-                QMessageBox.warning(self, "Warning", text="權限不足")
+                elif response.status_code == 401:
+                    QMessageBox.warning(self, "Warning", text="權限不足")
 
-        except ConnectionError as e:
-            print(e)
-            QMessageBox.warning(self, "Warning", text="連線失敗")
+            except ConnectionError as e:
+                print(e)
+                QMessageBox.warning(self, "Warning", text="連線失敗")
 
     def update_node(self, text):
-        cur_item = self.treeWidget.currentIndex()
+        cur_item = self.treeWidget.currentItem()
 
         url = self.api_url_call(cur_item)
 
@@ -198,20 +190,12 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             )
 
             if response.status_code == 200:
+                self.delete_old_node(cur_item)
                 node_list = response.json().get('result')
+
                 for node in node_list:
                     item = QTreeWidgetItem(cur_item)
-                    item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
-                    for key, value in node.items():
-                        if key in self.tree_header:
-                            index = self.tree_header.index(key)
-                            if isinstance(value, bool):
-                                if value:
-                                    item.setCheckState(index, Qt.Checked)
-                                else:
-                                    item.setCheckState(index, Qt.Unchecked)
-                            else:
-                                item.setText(index, str(value))
+                    self.node_display(item, node)
 
             elif response.status_code == 401:
                 QMessageBox.warning(self, "Warning", text="權限不足")
@@ -233,17 +217,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
                 node_list = response.json().get('result')
                 for node in node_list:
                     item = QTreeWidgetItem(self.treeWidget)
-                    item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
-                    for key, value in node.items():
-                        if key in self.tree_header:
-                            index = self.tree_header.index(key)
-                            if isinstance(value, bool):
-                                if value:
-                                    item.setCheckState(index, Qt.Checked)
-                                else:
-                                    item.setCheckState(index, Qt.Unchecked)
-                            else:
-                                item.setText(index, str(value))
+                    self.node_display(item, node)
 
             elif response.status_code == 401:
                 QMessageBox.warning(self, "Warning", text="權限不足")
@@ -253,40 +227,31 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             QMessageBox.warning(self, "Warning", text="連線失敗")
 
     def get_node(self, expanded_item):
-        for i in reversed(range(expanded_item.childCount())):
-            expanded_item.takeChild(i)
+        self.delete_old_node(expanded_item)
 
         url = self.api_url_call(expanded_item)
 
-        try:
-            response = requests.get(
-                url,
-                headers={"Authorization": get_token(), "Content-Type": "application/json"}
-            )
+        if url:
+            try:
+                response = requests.get(
+                    url,
+                    headers={"Authorization": get_token(), "Content-Type": "application/json"}
+                )
 
-            if response.status_code == 200:
-                node_list = response.json().get('result')
-                for node in node_list:
-                    item = QTreeWidgetItem(expanded_item)
-                    item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
-                    for key, value in node.items():
-                        if key in self.tree_header:
-                            index = self.tree_header.index(key)
-                            if isinstance(value, bool):
-                                if value:
-                                    item.setCheckState(index, Qt.Checked)
-                                else:
-                                    item.setCheckState(index, Qt.Unchecked)
-                            else:
-                                item.setText(index, str(value))
+                if response.status_code == 200:
+                    node_list = response.json().get('result')
+                    for node in node_list:
+                        item = QTreeWidgetItem(expanded_item)
+                        self.node_display(item, node)
 
-            elif response.status_code == 401:
-                QMessageBox.warning(self, "Warning", text="權限不足")
+                elif response.status_code == 401:
+                    QMessageBox.warning(self, "Warning", text="權限不足")
 
-        except ConnectionError as e:
-            print(e)
-            QMessageBox.warning(self, "Warning", text="連線失敗")
+            except ConnectionError as e:
+                print(e)
+                QMessageBox.warning(self, "Warning", text="連線失敗")
 
+    # treeWidget sub function
     def api_url_call(self, item):
         url_data = dict()
         for data in self.get_data_header:
@@ -307,3 +272,21 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             url = f'{Urls.MODEL_DETAIL_API}/{layer_id}'
 
         return url
+
+    def node_display(self, cur_item, node):
+        cur_item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+        for key, value in node.items():
+            if key in self.tree_header:
+                index = self.tree_header.index(key)
+                if isinstance(value, bool):
+                    if value:
+                        cur_item.setCheckState(index, Qt.Checked)
+                    else:
+                        cur_item.setCheckState(index, Qt.Unchecked)
+                else:
+                    cur_item.setText(index, str(value))
+
+    def delete_old_node(self, cur_item):
+        for i in reversed(range(cur_item.childCount())):
+            cur_item.takeChild(i)
+
