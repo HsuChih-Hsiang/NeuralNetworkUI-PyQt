@@ -1,4 +1,5 @@
 from manage_system.label_dialog import AddLabelDialog
+from manage_system.update_label_dialog import UpdateLabelDialog
 import UI2Python.system_management_ui as system_management_ui
 from utility.config_file_io import get_token
 from utility.urls import Urls
@@ -32,9 +33,11 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
         self.treeWidget.setColumnCount(len(self.tree_header))
         self.treeWidget.setHeaderLabels(self.tree_header)
+        self.treeWidget.itemExpanded.connect(self.get_node)
+
+        # treeWidget menu
         self.treeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.treeWidget.customContextMenuRequested.connect(self.side_menu)
-        self.treeWidget.itemExpanded.connect(self.get_node)
 
         self.show()
 
@@ -131,23 +134,19 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             self.initial_configuration()
 
     def side_menu(self):
-        menu = QMenu()
-        action_1 = QAction("新增子節點")
-        menu.addAction(action_1)
-        action_2 = QAction("修改子節點")
-        menu.addAction(action_2)
-        action_1.triggered.connect(self.node_signal_1)
-        action_2.triggered.connect(self.node_signal_2)
-        menu.exec(QCursor.pos())
+        self.menu = QMenu(self)
+        self.menu.addAction("新增子節點", self.node_signal_1)
+        self.menu.addAction("修改子節點", self.node_signal_2)
+        self.menu.exec(QCursor.pos())
 
     def node_signal_1(self):
         self.label_dailog = AddLabelDialog()
-        self.show()
+        self.label_dailog.show()
         self.label_dailog.trans_label.connect(self.add_node)
 
     def node_signal_2(self):
-        self.label_dailog = AddLabelDialog()
-        self.show()
+        self.label_dailog = UpdateLabelDialog()
+        self.label_dailog.show()
         self.label_dailog.trans_label.connect(self.update_node)
 
     def add_node(self, text):
