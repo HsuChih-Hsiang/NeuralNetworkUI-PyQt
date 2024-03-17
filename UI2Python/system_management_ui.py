@@ -57,29 +57,12 @@ class Ui_Form(object):
         self.tab_2.setObjectName(u"tab_2")
         self.gridLayout_4 = QGridLayout(self.tab_2)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.edit_description_btn = QPushButton(self.tab_2)
-        self.edit_description_btn.setObjectName(u"edit_description_btn")
-
-        self.gridLayout_4.addWidget(self.edit_description_btn, 2, 2, 1, 1)
-
-        self.horizontalSpacer = QSpacerItem(583, 21, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_4.addItem(self.horizontalSpacer, 2, 0, 1, 1)
-
-        self.delete_btn = QPushButton(self.tab_2)
-        self.delete_btn.setObjectName(u"delete_btn")
-
-        self.gridLayout_4.addWidget(self.delete_btn, 2, 1, 1, 1)
-
         self.treeWidget = QTreeWidget(self.tab_2)
-        __qtreewidgetitem = QTreeWidgetItem()
-        __qtreewidgetitem.setText(0, u"1");
-        self.treeWidget.setHeaderItem(__qtreewidgetitem)
         self.treeWidget.setObjectName(u"treeWidget")
         self.treeWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.treeWidget.setProperty("showDropIndicator", True)
 
-        self.gridLayout_4.addWidget(self.treeWidget, 1, 0, 1, 3)
+        self.gridLayout_4.addWidget(self.treeWidget, 1, 0, 1, 2)
 
         self.tabWidget.addTab(self.tab_2, "")
 
@@ -98,8 +81,6 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.edit_btn.setText(QCoreApplication.translate("Form", u"\u9001\u51fa\u4fee\u6539", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("Form", u"\u5e33\u865f\u7ba1\u7406", None))
-        self.edit_description_btn.setText(QCoreApplication.translate("Form", u"\u4fee\u6539\u5167\u5bb9\u63cf\u8ff0", None))
-        self.delete_btn.setText(QCoreApplication.translate("Form", u"\u522a\u9664\u52fe\u9078\u9805\u76ee", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("Form", u"\u6df1\u5ea6\u5b78\u7fd2\u5167\u5bb9\u7ba1\u7406", None))
     # retranslateUi
 
