@@ -146,11 +146,35 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
     def node_signal_2(self):
         cur_item = self.treeWidget.currentItem()
-        url, layer_id = self.api_url_call(cur_item, is_update=True)
+        url, layer_id = self.api_url_call(cur_item, is_detail=True)
 
-        self.label_dailog = UpdateLabelDialog()
-        self.label_dailog.show()
-        self.label_dailog.trans_label.connect(self.update_node)
+        try:
+            if url:
+                response = requests.get(
+                    url,
+                    headers={"Authorization": get_token(), "Content-Type": "application/json"}
+                )
+
+                if response.status_code == 200:
+                    datas = response.json().get('result')
+
+                    if datas:
+                        self.label_dailog = UpdateLabelDialog(datas)
+                        self.label_dailog.show()
+                        self.label_dailog.trans_label.connect(self.update_node)
+
+                    else:
+                        QMessageBox.warning(self, "Warning", text="無該筆資料")
+
+                elif response.status_code == 400:
+                    QMessageBox.warning(self, "Warning", text="無該筆資料")
+
+                elif response.status_code == 401:
+                    QMessageBox.warning(self, "Warning", text="權限不足")
+
+        except ConnectionError as e:
+            print(e)
+            QMessageBox.warning(self, "Warning", text="連線失敗")
 
     def add_node(self, label_name):
         cur_item = self.treeWidget.currentItem()
@@ -201,9 +225,6 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
                     for node in node_list:
                         item = QTreeWidgetItem(cur_item)
                         self.node_display(item, node)
-
-                elif response.status_code == 400:
-                    QMessageBox.warning(self, "Warning", text="無該筆資料")
 
                 elif response.status_code == 401:
                     QMessageBox.warning(self, "Warning", text="權限不足")
@@ -260,7 +281,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
                 QMessageBox.warning(self, "Warning", text="連線失敗")
 
     # treeWidget sub function
-    def api_url_call(self, item, is_update=False):
+    def api_url_call(self, item, is_update=False, is_detail=False):
         url_data = dict()
         for data in self.get_data_header:
             index = self.tree_header.index(data)
@@ -268,20 +289,20 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
         layer = url_data.get('layer')
         layer_id = url_data.get('layer_id')
-        if is_update:
+        if is_update or is_detail:
             layer = str(int(layer - 1))
 
         if layer not in ['0', '1', '2', '3']:
             return 0
 
         if layer == '0':
-            url = f'{Urls.TOPIC_API}/{layer_id}'
+            url = f'{Urls.TOPIC_API}/{layer_id}' if not is_detail else f''
         elif layer == '1':
-            url = f'{Urls.SUBTOPIC_API}/{layer_id}'
+            url = f'{Urls.SUBTOPIC_API}/{layer_id}' if not is_detail else f''
         elif layer == '2':
-            url = f'{Urls.MODEL_CLASS_API}/{layer_id}'
+            url = f'{Urls.MODEL_CLASS_API}/{layer_id}' if not is_detail else f''
         else:
-            url = f'{Urls.MODEL_DETAIL_API}/{layer_id}'
+            url = f'{Urls.MODEL_DETAIL_API}/{layer_id}' if not is_detail else f''
 
         return url, layer_id
 
@@ -301,4 +322,3 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
     def delete_old_node(self, cur_item):
         for i in reversed(range(cur_item.childCount())):
             cur_item.takeChild(i)
-

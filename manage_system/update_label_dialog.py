@@ -12,8 +12,13 @@ class UpdateLabelDialog(QDialog, update_label_dialog_ui.Ui_Dialog):
         self.setupUi(self)
         self.setWindowTitle('Update Label Dialog')
         self.buttonBox.accepted.connect(self.return_args)
+        self.data = kwargs.get('data')
 
         self.show()
+
+    def show_data(self):
+        if self.data:
+            pass
 
     def return_args(self):
         label_name = self.label_name.text()
