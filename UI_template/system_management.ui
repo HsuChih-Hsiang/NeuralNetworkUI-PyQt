@@ -58,34 +58,7 @@
        <string>深度學習內容管理</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="2" column="2">
-        <widget class="QPushButton" name="edit_description_btn">
-         <property name="text">
-          <string>修改內容描述</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>583</width>
-           <height>21</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="1">
-        <widget class="QPushButton" name="delete_btn">
-         <property name="text">
-          <string>刪除勾選項目</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="3">
+       <item row="1" column="0" colspan="2">
         <widget class="QTreeWidget" name="treeWidget">
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
@@ -93,11 +66,6 @@
          <property name="showDropIndicator" stdset="0">
           <bool>true</bool>
          </property>
-         <column>
-          <property name="text">
-           <string notr="true">1</string>
-          </property>
-         </column>
         </widget>
        </item>
       </layout>
