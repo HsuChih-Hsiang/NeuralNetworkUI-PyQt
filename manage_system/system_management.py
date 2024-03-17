@@ -145,20 +145,22 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.label_dailog.trans_label.connect(self.add_node)
 
     def node_signal_2(self):
+        cur_item = self.treeWidget.currentItem()
+        url, layer_id = self.api_url_call(cur_item, is_update=True)
+
         self.label_dailog = UpdateLabelDialog()
         self.label_dailog.show()
         self.label_dailog.trans_label.connect(self.update_node)
 
-    def add_node(self, text):
+    def add_node(self, label_name):
         cur_item = self.treeWidget.currentItem()
-
-        url = self.api_url_call(cur_item)
+        url, layer, layer_id = self.api_url_call(cur_item)
 
         if url:
             try:
                 response = requests.post(
                     url,
-                    json={"name": text},
+                    json={"name": label_name},
                     headers={"Authorization": get_token(), "Content-Type": "application/json"}
                 )
 
@@ -176,28 +178,35 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
                 print(e)
                 QMessageBox.warning(self, "Warning", text="連線失敗")
 
-    def update_node(self, text):
+    def update_node(self, label_name, is_show, description):
         cur_item = self.treeWidget.currentItem()
-
-        url = self.api_url_call(cur_item)
+        url, layer_id = self.api_url_call(cur_item, is_update=True)
 
         try:
-            response = requests.put(
-                url,
-                json={},
-                headers={"Authorization": get_token(), "Content-Type": "application/json"}
-            )
+            if url:
+                response = requests.put(
+                    url,
+                    json={
+                        "name": label_name,
+                        "is_show": is_show,
+                        "description": description
+                    },
+                    headers={"Authorization": get_token(), "Content-Type": "application/json"}
+                )
 
-            if response.status_code == 200:
-                self.delete_old_node(cur_item)
-                node_list = response.json().get('result')
+                if response.status_code == 200:
+                    self.delete_old_node(cur_item)
+                    node_list = response.json().get('result')
 
-                for node in node_list:
-                    item = QTreeWidgetItem(cur_item)
-                    self.node_display(item, node)
+                    for node in node_list:
+                        item = QTreeWidgetItem(cur_item)
+                        self.node_display(item, node)
 
-            elif response.status_code == 401:
-                QMessageBox.warning(self, "Warning", text="權限不足")
+                elif response.status_code == 400:
+                    QMessageBox.warning(self, "Warning", text="無該筆資料")
+
+                elif response.status_code == 401:
+                    QMessageBox.warning(self, "Warning", text="權限不足")
 
         except ConnectionError as e:
             print(e)
@@ -228,7 +237,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
     def get_node(self, expanded_item):
         self.delete_old_node(expanded_item)
 
-        url = self.api_url_call(expanded_item)
+        url, layer_id = self.api_url_call(expanded_item)
 
         if url:
             try:
@@ -251,7 +260,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
                 QMessageBox.warning(self, "Warning", text="連線失敗")
 
     # treeWidget sub function
-    def api_url_call(self, item):
+    def api_url_call(self, item, is_update=False):
         url_data = dict()
         for data in self.get_data_header:
             index = self.tree_header.index(data)
@@ -259,18 +268,22 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
         layer = url_data.get('layer')
         layer_id = url_data.get('layer_id')
+        if is_update:
+            layer = str(int(layer - 1))
 
-        if layer not in ['1', '2', '3']:
+        if layer not in ['0', '1', '2', '3']:
             return 0
 
-        if layer == '1':
+        if layer == '0':
+            url = f'{Urls.TOPIC_API}/{layer_id}'
+        elif layer == '1':
             url = f'{Urls.SUBTOPIC_API}/{layer_id}'
         elif layer == '2':
             url = f'{Urls.MODEL_CLASS_API}/{layer_id}'
         else:
             url = f'{Urls.MODEL_DETAIL_API}/{layer_id}'
 
-        return url
+        return url, layer_id
 
     def node_display(self, cur_item, node):
         cur_item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
