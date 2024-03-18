@@ -159,7 +159,13 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
                     datas = response.json().get('result')
 
                     if datas:
-                        self.label_dailog = UpdateLabelDialog(datas)
+                        name = datas.get('name', '')
+                        is_show = datas.get('is_show', False)
+                        description = datas.get('description', '')
+
+                        self.label_dailog = UpdateLabelDialog(
+                            label_name=name, is_show=is_show, description=description
+                        )
                         self.label_dailog.show()
                         self.label_dailog.trans_label.connect(self.update_node)
 
@@ -205,26 +211,31 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
     def update_node(self, label_name, is_show, description):
         cur_item = self.treeWidget.currentItem()
         url, layer_id = self.api_url_call(cur_item, is_update=True)
+        json_data = {
+            "name": label_name,
+            "is_show": is_show,
+            "description": description
+            }
 
         try:
             if url:
                 response = requests.put(
                     url,
-                    json={
-                        "name": label_name,
-                        "is_show": is_show,
-                        "description": description
-                    },
+                    json=json_data,
                     headers={"Authorization": get_token(), "Content-Type": "application/json"}
                 )
 
                 if response.status_code == 200:
-                    self.delete_old_node(cur_item)
-                    node_list = response.json().get('result')
-
-                    for node in node_list:
-                        item = QTreeWidgetItem(cur_item)
-                        self.node_display(item, node)
+                    for key, value in json_data.items():
+                        if key in self.tree_header:
+                            index = self.tree_header.index(key)
+                            if isinstance(value, bool):
+                                if value:
+                                    cur_item.setCheckState(index, Qt.Checked)
+                                else:
+                                    cur_item.setCheckState(index, Qt.Unchecked)
+                            else:
+                                cur_item.setText(index, str(value))
 
                 elif response.status_code == 401:
                     QMessageBox.warning(self, "Warning", text="權限不足")
@@ -290,19 +301,19 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         layer = url_data.get('layer')
         layer_id = url_data.get('layer_id')
         if is_update or is_detail:
-            layer = str(int(layer - 1))
+            layer = str(int(layer) - 1)
 
         if layer not in ['0', '1', '2', '3']:
             return 0
 
         if layer == '0':
-            url = f'{Urls.TOPIC_API}/{layer_id}' if not is_detail else f''
+            url = f'{Urls.TOPIC_API if not is_detail else Urls.TOPIC_DETAIL_API}/{layer_id}'
         elif layer == '1':
-            url = f'{Urls.SUBTOPIC_API}/{layer_id}' if not is_detail else f''
+            url = f'{Urls.SUBTOPIC_API if not is_detail else Urls.SUBTOPIC_DETAIL_API}/{layer_id}'
         elif layer == '2':
-            url = f'{Urls.MODEL_CLASS_API}/{layer_id}' if not is_detail else f''
+            url = f'{Urls.MODEL_CLASS_API if not is_detail else Urls.MODEL_CLASS_DETAIL_API}/{layer_id}'
         else:
-            url = f'{Urls.MODEL_DETAIL_API}/{layer_id}' if not is_detail else f''
+            url = f'{Urls.MODEL_DETAIL_API if not is_detail else Urls.MODEL_DETAIL_DESCRIPTION_API}/{layer_id}'
 
         return url, layer_id
 
