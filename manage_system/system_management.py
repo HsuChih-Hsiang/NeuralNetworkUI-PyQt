@@ -1,5 +1,6 @@
 from manage_system.label_dialog import AddLabelDialog
 from manage_system.update_label_dialog import UpdateLabelDialog
+from manage_system.label_url_dialog import LabelUrlDialog
 import UI2Python.system_management_ui as system_management_ui
 from utility.config_file_io import get_token
 from utility.urls import Urls
@@ -137,6 +138,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         self.menu = QMenu(self)
         self.menu.addAction("新增子節點", self.node_signal_1)
         self.menu.addAction("修改子節點", self.node_signal_2)
+        self.menu.addAction("對應範例 API", self.node_signal_3)
         self.menu.exec(QCursor.pos())
 
     def node_signal_1(self):
@@ -146,7 +148,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
     def node_signal_2(self):
         cur_item = self.treeWidget.currentItem()
-        url, layer_id = self.api_url_call(cur_item, is_detail=True)
+        url, layer, layer_id = self.api_url_call(cur_item, is_detail=True)
 
         try:
             if url:
@@ -182,6 +184,12 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             print(e)
             QMessageBox.warning(self, "Warning", text="連線失敗")
 
+    def node_signal_3(self):
+        cur_item = self.treeWidget.currentItem()
+        url, layer, layer_id = self.api_url_call(cur_item, is_detail=True)
+        self.label_dailog = LabelUrlDialog(layer=layer, layer_id=layer_id)
+        self.label_dailog.show()
+
     def add_node(self, label_name):
         cur_item = self.treeWidget.currentItem()
         url, layer, layer_id = self.api_url_call(cur_item)
@@ -210,7 +218,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
 
     def update_node(self, label_name, is_show, description):
         cur_item = self.treeWidget.currentItem()
-        url, layer_id = self.api_url_call(cur_item, is_update=True)
+        url, layer, layer_id = self.api_url_call(cur_item, is_update=True)
         json_data = {
             "name": label_name,
             "is_show": is_show,
@@ -269,7 +277,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
     def get_node(self, expanded_item):
         self.delete_old_node(expanded_item)
 
-        url, layer_id = self.api_url_call(expanded_item)
+        url, layer, layer_id = self.api_url_call(expanded_item)
 
         if url:
             try:
@@ -304,7 +312,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
             layer = str(int(layer) - 1)
 
         if layer not in ['0', '1', '2', '3']:
-            return 0
+            return 0, 0, 0
 
         if layer == '0':
             url = f'{Urls.TOPIC_API if not is_detail else Urls.TOPIC_DETAIL_API}/{layer_id}'
@@ -315,7 +323,7 @@ class SystemManagement(QWidget, system_management_ui.Ui_Form):
         else:
             url = f'{Urls.MODEL_DETAIL_API if not is_detail else Urls.MODEL_DETAIL_DESCRIPTION_API}/{layer_id}'
 
-        return url, layer_id
+        return url, layer, layer_id
 
     def node_display(self, cur_item, node):
         cur_item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)

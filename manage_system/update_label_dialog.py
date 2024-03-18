@@ -9,7 +9,7 @@ class UpdateLabelDialog(QDialog, update_label_dialog_ui.Ui_Dialog):
     trans_label = Signal(str, bool, str)
 
     def __init__(self, label_name, is_show, description, parent=None):
-        super().__init__(parent, )
+        super().__init__(parent,)
         self.setupUi(self)
         self.setWindowTitle('Update Label Dialog')
         self.buttonBox.accepted.connect(self.return_args)
