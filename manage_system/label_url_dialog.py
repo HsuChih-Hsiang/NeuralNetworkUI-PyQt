@@ -12,4 +12,7 @@ class LabelUrlDialog(QDialog, label_url_dialog_ui.Ui_Dialog):
 
         self.show()
 
+    def enum_to_group_combobox(self):
+        pass
+
 
