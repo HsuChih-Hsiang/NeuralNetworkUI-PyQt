@@ -24,3 +24,24 @@ class Urls(Enum):
         host = env.get('host')
         port = env.get('port')
         return f"{host}{f':{port}' if port else ''}/{self.value}"
+
+
+class ModelUrls(Enum):
+    # Basic Model
+    CNN_API = 'deep_learning/cnn'
+    RNN_API = 'deep_learning/rnn'
+    LSTM_API = 'deep_learning/lstm'
+
+    @classmethod
+    def dict(cls):
+        env = open_config_file('setting', 'env.yaml', 'yaml')
+        host = env.get('host')
+        port = env.get('port')
+
+        dictionary = {
+            url.name: f"{host}{f':{port}' if port else ''}/{url.value}" for url in ModelUrls
+        }
+
+        return dictionary
+
+
