@@ -26,7 +26,7 @@ class Urls(Enum):
         return f"{host}{f':{port}' if port else ''}/{self.value}"
 
 
-class ModelUrls(Enum):
+class BasicModelUrls(Enum):
     # Basic Model
     CNN_API = 'deep_learning/cnn'
     RNN_API = 'deep_learning/rnn'
@@ -39,9 +39,19 @@ class ModelUrls(Enum):
         port = env.get('port')
 
         dictionary = {
-            url.name: f"{host}{f':{port}' if port else ''}/{url.value}" for url in ModelUrls
+            url.name: f"{host}{f':{port}' if port else ''}/{url.value}" for url in BasicModelUrls
         }
 
         return dictionary
 
 
+class ModeMapping(Enum):
+    # Basic Model
+    Basic_Model_API = BasicModelUrls.dict()
+
+    @classmethod
+    def dict(cls):
+        dictionary = {
+            mapping.name: mapping.value for mapping in ModeMapping
+        }
+        return dictionary
