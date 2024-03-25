@@ -19,6 +19,8 @@ class Urls(Enum):
     MODEL_CLASS_DETAIL_API = 'layer_label/model_class/detail'
     MODEL_DETAIL_DESCRIPTION_API = 'layer_label/model_detail/detail'
 
+    MODEL_MAPPING_API = 'layer_label/model_mapping'
+
     def __format__(self, format_spec):
         env = open_config_file('setting', 'env.yaml', 'yaml')
         host = env.get('host')

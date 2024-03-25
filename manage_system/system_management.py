@@ -6,7 +6,6 @@ from utility.config_file_io import get_token
 from utility.urls import Urls
 import requests
 from PySide6.QtWidgets import *
-from PySide6.QtCore import *
 from PySide6.QtGui import *
 
 
